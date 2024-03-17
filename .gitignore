@@ -1,0 +1,6 @@
+.DS_Store
+.env*.local
+/sandbox.*
+/TODOs.md
+node_modules/
+/ui

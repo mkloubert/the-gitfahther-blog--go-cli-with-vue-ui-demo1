@@ -1,0 +1,14 @@
+{
+  "name": "the-gitfahther-blog--go-cli-with-vue-ui-demo1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:ui && go build .",
+    "build:ui": "cd ui-dev && npm run build && cd ..",
+    "dev": "npm run build:ui && go run ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
