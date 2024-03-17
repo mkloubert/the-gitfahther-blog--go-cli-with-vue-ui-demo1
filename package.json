@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:ui && go build .",
+    "build": "npm run build:ui && go build -o ./embeded-web-ui-demo",
     "build:ui": "cd ui-dev && npm run build && cd ..",
     "dev": "npm run build:ui && go run ."
   },
