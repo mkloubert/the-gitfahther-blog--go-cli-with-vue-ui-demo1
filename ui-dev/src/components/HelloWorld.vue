@@ -57,6 +57,8 @@
         this.isBusy = true;
         
         try {
+          // access the GET endpoint in
+          // Go backend
           const {
             data,
             status
@@ -68,6 +70,8 @@
             throw new Error(`Unexpected response: ${status}`);
           }
 
+          // write string to `timeFromApi`
+          // so it can be print out in the GUI
           this.timeFromApi = dayjs(data).toISOString();
         } catch (error) {
           console.error('[ERROR]', 'HelloWorld.reloadTimeFromApi()', error);

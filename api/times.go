@@ -20,56 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package main
+package api
 
 import (
-	"embed"
 	"fmt"
 	"net/http"
-	"os"
-
-	api "github.com/mkloubert/the-gitfahther-blog--go-cli-with-vue-ui-demo1/api"
-	"github.com/spf13/cobra"
+	"time"
 )
 
-//go:embed ui/*
-var webUI embed.FS
+// GetCurrentTime handles a GET request of
+// `/api/times/now` and returns the current time
+// in RFC3339 format with milliseconds
+func GetCurrentTime(w http.ResponseWriter, r *http.Request) {
+	now := time.Now()
 
-func main() {
-	var port int32
+	if r.Method != "GET" {
+		// we currently only support GET
+		w.WriteHeader(405)
+		w.Write([]byte(r.Method + " method not supported"))
 
-	var rootCmd = &cobra.Command{
-		Use:   "go-cli-with-vue-ui-demo1",
-		Short: "Demo how to ship Vue app with Go CLI",
-		Long:  "This demo shows how to integrate a Vuetify web app into a Go CLI application with implemented web server.",
-		Run: func(cmd *cobra.Command, args []string) {
-			tcpPort := fmt.Sprint(port)
-
-			// this will provide all files into `ui/` subfolder
-			http.Handle(
-				"/ui/",
-				http.FileServer(
-					http.FS(webUI),
-				),
-			)
-
-			// out backend endpoint
-			http.HandleFunc("/api/times/now", api.GetCurrentTime)
-
-			fmt.Println("Server will run on port: " + tcpPort)
-
-			err := http.ListenAndServe(":"+tcpPort, nil)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(666)
-			}
-		},
+		return
 	}
 
-	rootCmd.Flags().Int32VarP(&port, "port", "p", 4000, "custom TCP port for the HTTP service")
+	// format time value and
+	// convert it to byte array
+	nowStr := now.Format(time.RFC3339Nano)
+	nowStrData := []byte(nowStr)
 
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	// response header
+	w.WriteHeader(200)
+	w.Header().Add("Content-Type", "text/plain; charset=UTF-8")
+	w.Header().Add("Content-Length", fmt.Sprint(len(nowStrData)))
+
+	// send body with time string
+	w.Write(nowStrData)
 }
